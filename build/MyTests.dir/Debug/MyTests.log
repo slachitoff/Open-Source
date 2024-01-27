@@ -1,0 +1,17 @@
+﻿  my_tests.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\ostream(365,13): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+  (compiling source file '../tests/my_tests.cpp')
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\ostream(365,13):
+  the template instantiation context (the oldest one first) is
+  	C:\Users\Sky\Documents\GitHub\Open-Source\build\_deps\googletest-src\googletest\include\gtest\gtest-message.h(103,48):
+  	see reference to class template instantiation 'std::basic_stringstream<char,std::char_traits<char>,std::allocator<char>>' being compiled
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\sstream(788,14):
+  	see reference to class template instantiation 'std::basic_iostream<char,std::char_traits<char>>' being compiled
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\istream(724,31):
+  	see reference to class template instantiation 'std::basic_ostream<char,std::char_traits<char>>' being compiled
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\ostream(358,39):
+  	while compiling class template member function 'std::basic_ostream<char,std::char_traits<char>> &std::basic_ostream<char,std::char_traits<char>>::operator <<(__int64)'
+  		C:\Users\Sky\Documents\GitHub\Open-Source\build\_deps\googletest-src\googletest\include\gtest\gtest-printers.h(249,9):
+  		see the first reference to 'std::basic_ostream<char,std::char_traits<char>>::operator <<' in 'testing::internal::ConvertibleToIntegerPrinter::PrintValue'
+  
+  MyTests.vcxproj -> C:\Users\Sky\Documents\GitHub\Open-Source\build\Debug\MyTests.exe
