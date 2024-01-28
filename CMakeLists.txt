@@ -17,10 +17,10 @@ target_include_directories(OpenSourceExecutable PRIVATE ${CMAKE_CURRENT_SOURCE_D
 # Compiler options for your main application
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   target_compile_options(OpenSourceExecutable PRIVATE /Wall /MTd) # Add /MTd here
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   target_compile_options(OpenSourceExecutable PRIVATE -Wall -Wextra)
 else()
-  message(FATAL_ERROR "Unsupported compiler")
+  message(WARNING "Compiler not officially supported: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
 # ---- Google Test Integration ----
