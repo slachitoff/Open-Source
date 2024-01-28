@@ -3,11 +3,16 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: gcc:latest  
+      - image: gcc:latest
     steps:
       - checkout
       - run:
-          name: Clean and Create Build Directory
+          name: Install CMake
+          command: |
+            apt-get update
+            apt-get install -y cmake
+      - run:
+          name: Create Build Directory
           command: |
             rm -rf build
             mkdir build
