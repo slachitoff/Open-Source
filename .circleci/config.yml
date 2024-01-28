@@ -23,7 +23,9 @@ jobs:
             cmake ..
       - run:
           name: Build Project
-          command: cmake --build .
+          command: |
+            cd build
+            cmake --build . --verbose
       - run:
           name: Run Tests
           command: ./build/MyTests  
