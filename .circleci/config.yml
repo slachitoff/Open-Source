@@ -3,12 +3,14 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: gcc:latest  # Using GCC Docker image
+      - image: gcc:latest  
     steps:
       - checkout
       - run:
-          name: Create Build Directory
-          command: mkdir build
+          name: Clean and Create Build Directory
+          command: |
+            rm -rf build
+            mkdir build
       - run:
           name: Run CMake
           command: |
@@ -19,7 +21,7 @@ jobs:
           command: cmake --build .
       - run:
           name: Run Tests
-          command: ./build/MyTests  # Adjust the path to your test executable
+          command: ./build/MyTests  
 
 workflows:
   version: 2
