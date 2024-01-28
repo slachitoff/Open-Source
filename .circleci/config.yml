@@ -3,13 +3,23 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: circleci/cpp:latest  # Or choose an appropriate C++ image
+      - image: gcc:latest  # Using GCC Docker image
     steps:
       - checkout
-      - run: mkdir build
-      - run: cd build && cmake ..
-      - run: cmake --build .
-      - run: ./MyTests  # Run your tests
+      - run:
+          name: Create Build Directory
+          command: mkdir build
+      - run:
+          name: Run CMake
+          command: |
+            cd build
+            cmake ..
+      - run:
+          name: Build Project
+          command: cmake --build .
+      - run:
+          name: Run Tests
+          command: ./build/MyTests  # Adjust the path to your test executable
 
 workflows:
   version: 2
