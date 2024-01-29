@@ -8,27 +8,38 @@ jobs:
       - checkout
 
       - run:
-          name: Install CMake, Clang, and Clang Tools
+          name: Install CMake and Clang
           command: |
             apt-get update
             apt-get install -y cmake clang clang-tools clang-tidy
 
       - run:
-          name: Create Build Directory
-          command: mkdir -p build
-
-      - run:
           name: Run Clang Static Analyzer
           command: |
+            mkdir -p build
             cd build
             scan-build cmake ..
             scan-build --use-analyzer=/usr/bin/clang --status-bugs make
 
       - run:
-          name: Run Clang-Tidy
+        name: Run Clang-Tidy
+        command: |
+          mkdir -p build
+          cd build
+          cmake ..
+          run-clang-tidy -p .
+
+      - run:
+          name: Create Build Directory
+          command: |
+            rm -rf build
+            mkdir build
+
+      - run:
+          name: Run CMake
           command: |
             cd build
-            run-clang-tidy -p .
+            cmake ..
 
       - run:
           name: Build Project
