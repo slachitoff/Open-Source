@@ -6,26 +6,39 @@ jobs:
       - image: gcc:latest
     steps:
       - checkout
+
       - run:
-          name: Install CMake
+          name: Install CMake and Clang
           command: |
             apt-get update
-            apt-get install -y cmake
+            apt-get install -y cmake clang clang-tools
+
+      - run:
+          name: Run Clang Static Analyzer
+          command: |
+            mkdir -p build
+            cd build
+            scan-build cmake ..
+            scan-build --use-analyzer=/usr/bin/clang --status-bugs make
+
       - run:
           name: Create Build Directory
           command: |
             rm -rf build
             mkdir build
+
       - run:
           name: Run CMake
           command: |
             cd build
             cmake ..
+
       - run:
           name: Build Project
           command: |
             cd build
             cmake --build . --verbose
+
       - run:
           name: Run Tests
           command: ./build/MyTests  
