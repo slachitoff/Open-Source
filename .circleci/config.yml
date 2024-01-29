@@ -8,10 +8,15 @@ jobs:
       - checkout
 
       - run:
-          name: Install CMake, Clang, and Clang Tools
+          name: Install CMake, Clang, Clang Tools, and ClangFormat
           command: |
             apt-get update
-            apt-get install -y cmake clang clang-tools clang-tidy
+            apt-get install -y cmake clang clang-tools clang-tidy clang-format
+
+      - run:
+          name: Check Code Formatting
+          command: |
+            find . -iname "*.h" -o -iname "*.cpp" | xargs clang-format -i && git diff --exit-code
 
       - run:
           name: Create and Configure Build Directory
