@@ -17,7 +17,10 @@ jobs:
             echo 'export PATH=$PATH:/root/.local/bin' >> $BASH_ENV
             source $BASH_ENV
             conan --version  # Verify Conan installation
-
+      - run:
+          name: Create Default Conan Profile
+          command: |
+            conan profile detect --force
       - run:
           name: Install CMake, Clang, and Clang Tools
           command: |
