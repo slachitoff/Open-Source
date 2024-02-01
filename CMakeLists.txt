@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.10)
 # Project's name and version
 project(OpenSourceProject VERSION 1.0)
 
+# Include the Conan-generated file to set up global variables
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
 # Use C++17 standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -19,38 +23,34 @@ target_include_directories(OpenSourceExecutable PRIVATE ${CMAKE_CURRENT_SOURCE_D
 
 # Compiler options for your main application
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(OpenSourceExecutable PRIVATE /Wall /MTd) # Add /MTd here
+  target_compile_options(OpenSourceExecutable PRIVATE /Wall /MTd)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   target_compile_options(OpenSourceExecutable PRIVATE -Wall -Wextra)
 else()
   message(WARNING "Compiler not officially supported: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
-# ---- Google Test Integration ----
-include(FetchContent)
+# ---- Google Test Integration with Conan ----
+# Assuming Conan has already installed GoogleTest and set up targets
 
-# Specify the version and URL of Google Test
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG release-1.12.0  
-)
-
-# Enable and configure Google Test
-FetchContent_MakeAvailable(googletest)
+find_package(GTest REQUIRED)
 
 # Create a separate target for your tests
 add_executable(MyTests tests/my_tests.cpp)
 
-# Set compiler options for MyTests target
+# Link Google Test to your test target
+target_link_libraries(MyTests GTest::gtest GTest::gtest_main)
+
+# Set compiler options for MyTests target, if necessary
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(MyTests PRIVATE /MTd) # Add /MTd here
+  target_compile_options(MyTests PRIVATE /MTd)
 endif()
 
-# Link Google Test to your test target
-target_link_libraries(MyTests gtest_main)
+# Link Google Test to your test target using Conan-provided targets
+target_link_libraries(MyTests ${CONAN_LIBS})
 
 # Add a test target to run your tests
+enable_testing()
 include(GoogleTest)
 gtest_discover_tests(MyTests)
 
@@ -63,5 +63,4 @@ gtest_discover_tests(MyTests)
 # install(TARGETS OpenSourceExecutable DESTINATION bin)
 
 # Optional: Enable testing and add the test subdirectory
-# enable_testing()
-# add_subdirectory(tests)
+# (Already handled above with enable_testing())
