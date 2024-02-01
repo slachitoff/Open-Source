@@ -20,10 +20,9 @@ jobs:
       - run:
           name: Prepare for Installation
           command: |
-            sudo su
-            mkdir -p /var/lib/apt/lists/partial
-            chmod -R 755 /var/lib/apt/lists
-            apt-get update
+            sudo mkdir -p /var/lib/apt/lists/partial
+            sudo chmod -R 755 /var/lib/apt/lists
+            sudo apt-get update -y -qq
 
       # Install CMake, Clang, and Clang Tools
       - run:
