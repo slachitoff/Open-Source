@@ -3,26 +3,24 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: gcc:latest  # Using a standard gcc image
+      - image: gcc:latest
     steps:
       - checkout
 
-      # Setup Conan
+      # Install Python and pip
       - run:
-          name: Setup Conan
+          name: Install Python and pip
           command: |
-            pip install conan
-            conan --version  # Verify Conan installation
-            conan profile new default --detect  # Create a default profile
-            conan profile update settings.compiler.libcxx=libstdc++11 default
+            apt-get update
+            apt-get install -y python3 python3-distutils
+            curl -sS https://bootstrap.pypa.io/get-pip.py | python3
 
-      # Prepare for Installing CMake, Clang, and Clang Tools
+      # Install Conan
       - run:
-          name: Prepare for Installation
+          name: Install Conan
           command: |
-            sudo mkdir -p /var/lib/apt/lists/partial
-            sudo chmod -R 755 /var/lib/apt/lists
-            sudo apt-get update -y -qq
+            python3 -m pip install conan
+            conan --version  # Verify Conan installation
 
       # Install CMake, Clang, and Clang Tools
       - run:
@@ -35,7 +33,6 @@ jobs:
           name: Verify ClangFormat Version
           command: |
             clang-format --version
-
       # Check Code Formatting
       - run:
           name: Check Code Formatting
