@@ -7,16 +7,38 @@ jobs:
     steps:
       - checkout
 
+      # Setup Conan
       - run:
-          name: Setup Conan and CMake
+          name: Setup Conan
           command: |
             pip install conan
             conan --version  # Verify Conan installation
             conan profile new default --detect  # Create a default profile
             conan profile update settings.compiler.libcxx=libstdc++11 default
+
+      # Install CMake, Clang, and Clang Tools
+      - run:
+          name: Install CMake, Clang, and Clang Tools
+          command: |
             apt-get update
             apt-get install -y cmake clang clang-tools clang-tidy clang-format
 
+      # Verify ClangFormat Version
+      - run:
+          name: Verify ClangFormat Version
+          command: |
+            clang-format --version
+
+      # Check Code Formatting
+      - run:
+          name: Check Code Formatting
+          command: |
+            if find . \( -iname "*.h" -o -iname "*.cpp" \) -exec clang-format -style=file -output-replacements-xml {} + | grep "<replacement " > /dev/null; then
+                echo "Code formatting issues found."
+                exit 1
+            fi
+
+      # Install Dependencies with Conan
       - run:
           name: Install Dependencies with Conan
           command: |
@@ -24,25 +46,42 @@ jobs:
             cd build
             conan install .. --build=missing -s build_type=Release
 
+      # Configure Project with CMake
       - run:
           name: Configure Project with CMake
           command: |
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=Release
 
+      # Run Clang Static Analyzer
+      - run:
+          name: Run Clang Static Analyzer
+          command: |
+            cd build
+            scan-build --use-analyzer=/usr/bin/clang --status-bugs make
+
+      # Run Clang-Tidy
+      - run:
+          name: Run Clang-Tidy
+          command: |
+            cd build
+            run-clang-tidy -p . || exit 1
+
+      # Build Project
       - run:
           name: Build Project
           command: |
             cd build
             cmake --build .
 
+      # Run Tests
       - run:
           name: Run Tests
-          command: |
-            ./build/MyTests
+          command: ./build/MyTests
 
 workflows:
   version: 2
   build-test:
     jobs:
       - build-and-test
+
