@@ -3,54 +3,38 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: gcc:latest  # Consider using an image with Python pre-installed
+      - image: conanio/gcc11  # Use a Conan Docker image with gcc
     steps:
       - checkout
 
       - run:
-          name: Install Conan Using pipx and Update PATH
+          name: Setup Conan and CMake
           command: |
-            apt-get update
-            apt-get install -y pipx
-            pipx ensurepath
-            pipx install conan
-            echo 'export PATH=$PATH:/root/.local/bin' >> $BASH_ENV
-            source $BASH_ENV
+            pip install conan
             conan --version  # Verify Conan installation
-      - run:
-          name: Create Default Conan Profile
-          command: |
-            conan profile detect --force
-      - run:
-          name: Install CMake, Clang, and Clang Tools
-          command: |
-            apt-get install -y cmake clang clang-tools clang-tidy
-            apt-get install -y clang-format-16
-            update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-16 100
-
-      - run:
-          name: Verify ClangFormat Version
-          command: |
-            clang-format --version
+            conan profile new default --detect  # Create a default profile
+            conan profile update settings.compiler.libcxx=libstdc++11 default
+            apt-get update
+            apt-get install -y cmake clang clang-tools clang-tidy clang-format
 
       - run:
           name: Install Dependencies with Conan
           command: |
             mkdir -p build
             cd build
-            conan install .. --build=missing
+            conan install .. --build=missing -s build_type=Release
 
       - run:
           name: Configure Project with CMake
           command: |
             cd build
-            cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+            cmake .. -DCMAKE_BUILD_TYPE=Release
 
       - run:
           name: Build Project
           command: |
             cd build
-            cmake --build . --verbose
+            cmake --build .
 
       - run:
           name: Run Tests
