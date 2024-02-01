@@ -49,13 +49,18 @@ jobs:
             mkdir -p build
             cd build
             conan install .. --build=missing
+            echo "Listing contents of build directory:"
+            ls -la
 
       - run:
           name: Configure Project with CMake
           command: |
             . ~/venv/bin/activate
             cd build
+            echo "Running CMake in directory:"
+            pwd
             cmake .. -DCMAKE_BUILD_TYPE=Release
+
 
       - run:
           name: Run Clang Static Analyzer
