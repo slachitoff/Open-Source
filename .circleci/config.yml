@@ -8,22 +8,33 @@ jobs:
       - checkout
 
       - run:
-          name: Install CMake, Clang, Clang Tools, and ClangFormat
+          name: Install CMake, Clang, and Clang Tools
           command: |
             apt-get update
-            apt-get install -y cmake clang clang-tools clang-tidy clang-format
+            apt-get install -y cmake clang clang-tools clang-tidy
+            apt-get install -y clang-format-16
+            update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-16 100
+
+      - run:
+          name: Verify ClangFormat Version
+          command: |
+            clang-format --version
 
       - run:
           name: Check Code Formatting
           command: |
-            find . -iname "*.h" -o -iname "*.cpp" | xargs clang-format -i && git diff --exit-code
+            find . \( -iname "*.h" -o -iname "*.cpp" \) -exec clang-format -style=file -output-replacements-xml {} + | grep -c "<replacement " >/dev/null
+            if [ $? -ne 1 ]; then
+              echo "Code formatting issues found."
+              exit 1
+            fi
 
       - run:
           name: Create and Configure Build Directory
           command: |
             mkdir -p build
             cd build
-            cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+            cmake -DCMAKE_EXPORT_COMPILE_COMPILE_COMMANDS=ON ..
 
       - run:
           name: Run Clang Static Analyzer
@@ -45,7 +56,7 @@ jobs:
 
       - run:
           name: Run Tests
-          command: ./build/MyTests  
+          command: ./build/MyTests
 
 workflows:
   version: 2
