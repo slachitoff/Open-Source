@@ -2,14 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 
 project(OpenSourceProject VERSION 1.0)
 
-# Conan setup should be done after the project is defined
+# Include the Conan-generated file
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+# This automatically calls conan_basic_setup()
+conan_basic_setup(TARGETS)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(OpenSourceExecutable src/main.cpp)
 target_include_directories(OpenSourceExecutable PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -22,20 +21,9 @@ else()
   message(WARNING "Compiler not officially supported: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
-# Google Test Integration with Conan
-# Conan has already installed GoogleTest and set up targets
-
-find_package(GTest REQUIRED)
-
-add_executable(MyTests tests/my_tests.cpp)
-
 # Link Google Test to your test target using Conan-provided targets
-target_link_libraries(MyTests ${CONAN_LIBS})
-
-# Compiler options for MyTests target, if necessary
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(MyTests PRIVATE /MTd)
-endif()
+add_executable(MyTests tests/my_tests.cpp)
+target_link_libraries(MyTests CONAN_PKG::gtest)
 
 enable_testing()
 include(GoogleTest)
