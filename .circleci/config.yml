@@ -8,11 +8,12 @@ jobs:
       - checkout
 
       - run:
-          name: Install Python, Pip, and Conan
+          name: Install Conan Using pipx
           command: |
             apt-get update
-            apt-get install -y python3 python3-pip
-            pip3 install conan
+            apt-get install -y pipx
+            pipx ensurepath
+            pipx install conan
             conan --version  # Verify Conan installation
 
       - run:
