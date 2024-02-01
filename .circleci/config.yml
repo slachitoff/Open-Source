@@ -15,11 +15,12 @@ jobs:
             apt-get install -y python3 python3-distutils
             curl -sS https://bootstrap.pypa.io/get-pip.py | python3
 
-      # Install Conan
       - run:
-          name: Install Conan
+          name: Install Conan in a Virtual Environment
           command: |
-            python3 -m pip install conan
+            python3 -m venv conan_venv
+            . conan_venv/bin/activate
+            pip install conan
             conan --version  # Verify Conan installation
 
       # Install CMake, Clang, and Clang Tools
