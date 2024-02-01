@@ -22,8 +22,6 @@ jobs:
           command: |
             . ~/venv/bin/activate
             conan profile detect --force
-            conan profile update settings.compiler.libcxx=libstdc++11 default
-            conan profile update settings.build_type=Release default
 
       - run:
           name: Install CMake, Clang, and Clang Tools
