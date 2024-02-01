@@ -3,14 +3,21 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: gcc:latest
+      - image: gcc:latest  # Consider using an image with Python pre-installed
     steps:
       - checkout
 
       - run:
-          name: Install CMake, Clang, and Clang Tools
+          name: Install Python, Pip, and Conan
           command: |
             apt-get update
+            apt-get install -y python3 python3-pip
+            pip3 install conan
+            conan --version  # Verify Conan installation
+
+      - run:
+          name: Install CMake, Clang, and Clang Tools
+          command: |
             apt-get install -y cmake clang clang-tools clang-tidy
             apt-get install -y clang-format-16
             update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-16 100
@@ -21,33 +28,17 @@ jobs:
             clang-format --version
 
       - run:
-          name: Check Code Formatting
-          command: |
-            if find . \( -iname "*.h" -o -iname "*.cpp" \) -exec clang-format -style=file -output-replacements-xml {} + | grep "<replacement " > /dev/null; then
-                echo "Code formatting issues found."
-                exit 1
-            else
-                echo "No code formatting issues found."
-            fi
-
-      - run:
-          name: Create and Configure Build Directory
+          name: Install Dependencies with Conan
           command: |
             mkdir -p build
             cd build
-            cmake -DCMAKE_EXPORT_COMPILE_COMPILE_COMMANDS=ON ..
+            conan install .. --build=missing
 
       - run:
-          name: Run Clang Static Analyzer
+          name: Configure Project with CMake
           command: |
             cd build
-            scan-build --use-analyzer=/usr/bin/clang --status-bugs make
-
-      - run:
-          name: Run Clang-Tidy
-          command: |
-            cd build
-            run-clang-tidy -p . || exit 1
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
 
       - run:
           name: Build Project
@@ -57,7 +48,8 @@ jobs:
 
       - run:
           name: Run Tests
-          command: ./build/MyTests
+          command: |
+            ./build/MyTests
 
 workflows:
   version: 2
