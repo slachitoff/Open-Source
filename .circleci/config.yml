@@ -8,12 +8,14 @@ jobs:
       - checkout
 
       - run:
-          name: Install Conan Using pipx
+          name: Install Conan Using pipx and Update PATH
           command: |
             apt-get update
             apt-get install -y pipx
             pipx ensurepath
             pipx install conan
+            echo 'export PATH=$PATH:/root/.local/bin' >> $BASH_ENV
+            source $BASH_ENV
             conan --version  # Verify Conan installation
 
       - run:
