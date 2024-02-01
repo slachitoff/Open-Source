@@ -46,7 +46,9 @@ jobs:
           name: Install Dependencies with Conan
           command: |
             . ~/venv/bin/activate
-            conan install .. --build=missing -s build_type=Release
+            mkdir -p build
+            cd build
+            conan install ../ --build=missing -s build_type=Release
 
       - run:
           name: Configure Project with CMake
