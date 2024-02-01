@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: conanio/gcc11  # Use a Conan Docker image with gcc
+      - image: gcc:latest  # Using a standard gcc image
     steps:
       - checkout
 
