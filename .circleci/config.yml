@@ -18,10 +18,10 @@ jobs:
             conan --version  # Verify Conan installation
 
       - run:
-          name: Create and Update Conan Profile
+          name: Detect and Create Conan Profile
           command: |
             . ~/venv/bin/activate
-            conan profile new default --detect  # Create a default profile
+            conan profile detect --force
             conan profile update settings.compiler.libcxx=libstdc++11 default
             conan profile update settings.build_type=Release default
 
