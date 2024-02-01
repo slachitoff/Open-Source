@@ -18,6 +18,14 @@ jobs:
             conan --version  # Verify Conan installation
 
       - run:
+          name: Create and Update Conan Profile
+          command: |
+            . ~/venv/bin/activate
+            conan profile new default --detect  # Create a default profile
+            conan profile update settings.compiler.libcxx=libstdc++11 default
+            conan profile update settings.build_type=Release default
+
+      - run:
           name: Install CMake, Clang, and Clang Tools
           command: |
             apt-get install -y cmake clang clang-tools clang-tidy clang-format
@@ -42,7 +50,7 @@ jobs:
             . ~/venv/bin/activate
             mkdir -p build
             cd build
-            conan install .. --build=missing -s build_type=Release
+            conan install .. --build=missing
 
       - run:
           name: Configure Project with CMake
