@@ -1,27 +1,19 @@
-# Specify the minimum version for CMake
 cmake_minimum_required(VERSION 3.10)
 
-# Project's name and version
 project(OpenSourceProject VERSION 1.0)
 
-# Include the Conan-generated file to set up global variables
+# Conan setup should be done after the project is defined
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-# Use C++17 standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Enable the generation of compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Add the executable for your main application
 add_executable(OpenSourceExecutable src/main.cpp)
-
-# Include directories for your main application
 target_include_directories(OpenSourceExecutable PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# Compiler options for your main application
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   target_compile_options(OpenSourceExecutable PRIVATE /Wall /MTd)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -30,37 +22,21 @@ else()
   message(WARNING "Compiler not officially supported: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
-# ---- Google Test Integration with Conan ----
-# Assuming Conan has already installed GoogleTest and set up targets
+# Google Test Integration with Conan
+# Conan has already installed GoogleTest and set up targets
 
 find_package(GTest REQUIRED)
 
-# Create a separate target for your tests
 add_executable(MyTests tests/my_tests.cpp)
-
-# Link Google Test to your test target
-target_link_libraries(MyTests GTest::gtest GTest::gtest_main)
-
-# Set compiler options for MyTests target, if necessary
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  target_compile_options(MyTests PRIVATE /MTd)
-endif()
 
 # Link Google Test to your test target using Conan-provided targets
 target_link_libraries(MyTests ${CONAN_LIBS})
 
-# Add a test target to run your tests
+# Compiler options for MyTests target, if necessary
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  target_compile_options(MyTests PRIVATE /MTd)
+endif()
+
 enable_testing()
 include(GoogleTest)
 gtest_discover_tests(MyTests)
-
-# ---- End of Google Test Integration ----
-
-# Optional: If you have subdirectories like for tests, add them
-# add_subdirectory(tests)
-
-# Optional: Install rules, specify how to install your project
-# install(TARGETS OpenSourceExecutable DESTINATION bin)
-
-# Optional: Enable testing and add the test subdirectory
-# (Already handled above with enable_testing())
