@@ -8,6 +8,9 @@ project(OpenSourceProject VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Enable the generation of compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Add the executable for your main application
 add_executable(OpenSourceExecutable src/main.cpp)
 
