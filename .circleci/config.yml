@@ -23,10 +23,11 @@ jobs:
       - run:
           name: Check Code Formatting
           command: |
-            find . \( -iname "*.h" -o -iname "*.cpp" \) -exec clang-format -style=file -output-replacements-xml {} + | grep -c "<replacement " >/dev/null
-            if [ $? -ne 1 ]; then
-              echo "Code formatting issues found."
-              exit 1
+            if find . \( -iname "*.h" -o -iname "*.cpp" \) -exec clang-format -style=file -output-replacements-xml {} + | grep "<replacement " > /dev/null; then
+                echo "Code formatting issues found."
+                exit 1
+            else
+                echo "No code formatting issues found."
             fi
 
       - run:
