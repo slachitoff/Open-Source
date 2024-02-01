@@ -47,7 +47,7 @@ jobs:
           name: Run Clang-Tidy
           command: |
             cd build
-            run-clang-tidy -p .
+            run-clang-tidy -p . || exit 1
 
       - run:
           name: Build Project
