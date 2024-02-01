@@ -8,79 +8,74 @@ jobs:
       - checkout
 
       - run:
-          name: Install Python Virtual Environment
+          name: Install Python Virtual Environment and Conan
           command: |
             apt-get update
             apt-get install -y python3-venv
             python3 -m venv ~/venv
-
-      - run:
-          name: Install Conan Using Virtual Environment
-          command: |
             . ~/venv/bin/activate
             pip install conan
             conan --version  # Verify Conan installation
 
-      # Install CMake, Clang, and Clang Tools
       - run:
           name: Install CMake, Clang, and Clang Tools
           command: |
             apt-get install -y cmake clang clang-tools clang-tidy clang-format
 
-      # Verify ClangFormat Version
       - run:
           name: Verify ClangFormat Version
           command: |
             clang-format --version
-      # Check Code Formatting
+
       - run:
           name: Check Code Formatting
           command: |
+            . ~/venv/bin/activate
             if find . \( -iname "*.h" -o -iname "*.cpp" \) -exec clang-format -style=file -output-replacements-xml {} + | grep "<replacement " > /dev/null; then
                 echo "Code formatting issues found."
                 exit 1
             fi
 
-      # Install Dependencies with Conan
       - run:
           name: Install Dependencies with Conan
           command: |
+            . ~/venv/bin/activate
             mkdir -p build
             cd build
             conan install .. --build=missing -s build_type=Release
 
-      # Configure Project with CMake
       - run:
           name: Configure Project with CMake
           command: |
+            . ~/venv/bin/activate
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=Release
 
-      # Run Clang Static Analyzer
       - run:
           name: Run Clang Static Analyzer
           command: |
+            . ~/venv/bin/activate
             cd build
             scan-build --use-analyzer=/usr/bin/clang --status-bugs make
 
-      # Run Clang-Tidy
       - run:
           name: Run Clang-Tidy
           command: |
+            . ~/venv/bin/activate
             cd build
             run-clang-tidy -p . || exit 1
 
-      # Build Project
       - run:
           name: Build Project
           command: |
+            . ~/venv/bin/activate
             cd build
             cmake --build .
 
-      # Run Tests
       - run:
           name: Run Tests
           command: |
+            . ~/venv/bin/activate
             ./build/MyTests
 
 workflows:
