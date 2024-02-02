@@ -10,8 +10,7 @@ jobs:
       - run:
           name: Install Python Virtual Environment and Conan
           command: |
-            apt-get update
-            apt-get install -y python3-venv python3-pip
+            apt-get update && apt-get install -y python3-venv python3-pip
             python3 -m venv ~/venv
             . ~/venv/bin/activate
             pip install conan
@@ -21,7 +20,8 @@ jobs:
           name: Detect and Create Conan Profile
           command: |
             . ~/venv/bin/activate
-            conan profile detect --force
+            conan profile new default --detect
+            conan profile update settings.build_type=Release default
 
       - run:
           name: Install CMake, Clang, and Clang Tools
@@ -39,18 +39,19 @@ jobs:
             fi
 
       - run:
-          name: Install Dependencies with Conan
+          name: Install Dependencies with Conan and Generate CMake Configuration
           command: |
             . ~/venv/bin/activate
             mkdir -p build && cd build
-            conan install .. --build=missing -s build_type=Release
+            conan install .. --build=missing -s build_type=Release -g CMakeDeps -g CMakeToolchain
 
       - run:
-          name: Configure Project with CMake
+          name: Configure Project with CMake Using Conan Toolchain
           command: |
             . ~/venv/bin/activate
             cd build
-            cmake .. -DCMAKE_BUILD_TYPE=Release
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+            cmake --build .
 
       - run:
           name: Run Clang Static Analyzer
