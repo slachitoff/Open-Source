@@ -9,6 +9,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Find the GTest package (assumes CMakeDeps generator has been used)
 find_package(GTest CONFIG REQUIRED)
 
+# Automatically include all component directories if they exist
+file(GLOB COMPONENT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/components/*")
+foreach(COMPONENT_DIR IN LISTS COMPONENT_DIRS)
+    if(IS_DIRECTORY ${COMPONENT_DIR})
+        add_subdirectory(${COMPONENT_DIR})
+    endif()
+endforeach()
+
 # Define your executable
 add_executable(OpenSourceExecutable src/main.cpp)
 target_include_directories(OpenSourceExecutable PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
