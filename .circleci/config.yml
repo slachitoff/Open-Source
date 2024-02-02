@@ -17,11 +17,10 @@ jobs:
             conan --version  # Verify Conan installation
 
       - run:
-          name: Detect and Create Conan Profile
+          name: Detect and Update Conan Profile
           command: |
             . ~/venv/bin/activate
-            conan profile new default --detect
-            conan profile update settings.build_type=Release default
+            conan profile detect --force  # Automatically detect and update default profile
 
       - run:
           name: Install CMake, Clang, and Clang Tools
