@@ -11,7 +11,7 @@ jobs:
           name: Install Python Virtual Environment and Conan
           command: |
             apt-get update
-            apt-get install -y python3-venv
+            apt-get install -y python3-venv python3-pip
             python3 -m venv ~/venv
             . ~/venv/bin/activate
             pip install conan
@@ -27,11 +27,7 @@ jobs:
           name: Install CMake, Clang, and Clang Tools
           command: |
             apt-get install -y cmake clang clang-tools clang-tidy clang-format
-
-      - run:
-          name: Verify ClangFormat Version
-          command: |
-            clang-format --version
+            clang-format --version  # Verify ClangFormat installation
 
       - run:
           name: Check Code Formatting
@@ -45,15 +41,10 @@ jobs:
       - run:
           name: Install Dependencies with Conan
           command: |
-            source ~/venv/bin/activate
+            . ~/venv/bin/activate
             mkdir -p build && cd build
             conan install .. --build=missing -s build_type=Release
 
-      - run:
-          name: List Build Directory Contents
-          command: |
-            ls -la build/            
-            
       - run:
           name: Configure Project with CMake
           command: |
