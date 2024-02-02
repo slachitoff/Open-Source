@@ -33,3 +33,49 @@
 
 # CMake build directory
 build/
+# Visual Studio specific files
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+Debug/
+Release/
+x64/
+.ipch/
+*.aps
+*.ncb
+*.suo
+*.user
+*.userosscache
+*.sdf
+*.opensdf
+*.unsuccessfulbuild
+*.pdb
+*.idb
+*.ilk
+*.res
+*.tlog/
+*.log
+*.vs/
+.vscode/
+
+# CMake specific files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.cmake
+Makefile
+*.make
+
+# Compiled Test files
+MyTests[1]_include.cmake
+MyTests[1]_tests.cmake
+
+# Dependency directories
+_deps/
+
+# Conan specific files
+conan.lock
+graph_info.json
+conanbuildinfo.*
+conaninfo.txt
