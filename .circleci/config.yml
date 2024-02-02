@@ -8,82 +8,76 @@ jobs:
       - checkout
 
       - run:
-          name: Install Python Virtual Environment and Conan
+          name: Update and Install Dependencies
           command: |
             apt-get update
-            apt-get install -y python3-venv
-            python3 -m venv ~/venv
-            . ~/venv/bin/activate
+            apt-get install -y python3-pip python3-venv cmake clang clang-tools clang-tidy clang-format
+            pip3 install virtualenv
+            virtualenv ~/venv
+            echo "source ~/venv/bin/activate" >> $BASH_ENV
+
+      - run:
+          name: Install Conan
+          command: |
             pip install conan
             conan --version  # Verify Conan installation
 
       - run:
           name: Detect and Create Conan Profile
-          command: |
-            . ~/venv/bin/activate
-            conan profile detect --force
+          command: conan profile new default --detect --force
 
       - run:
-          name: Install CMake, Clang, and Clang Tools
-          command: |
-            apt-get install -y cmake clang clang-tools clang-tidy clang-format
+          name: Update Conan Profile to Use libstdc++11
+          command: conan profile update settings.compiler.libcxx=libstdc++11 default
 
       - run:
           name: Verify ClangFormat Version
-          command: |
-            clang-format --version
+          command: clang-format --version
 
       - run:
           name: Check Code Formatting
           command: |
-            . ~/venv/bin/activate
             if find . \( -iname "*.h" -o -iname "*.cpp" \) -exec clang-format -style=file -output-replacements-xml {} + | grep "<replacement " > /dev/null; then
                 echo "Code formatting issues found."
                 exit 1
+            else
+                echo "No code formatting issues found."
             fi
 
       - run:
           name: Install Dependencies with Conan
           command: |
-            . ~/venv/bin/activate
-            mkdir -p build
+            mkdir build
             cd build
-            conan install ../ --build=missing -s build_type=Release
+            conan install .. --build=missing -s build_type=Release
 
       - run:
           name: Configure Project with CMake
           command: |
-            . ~/venv/bin/activate
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=Release
-
 
       - run:
           name: Run Clang Static Analyzer
           command: |
-            . ~/venv/bin/activate
             cd build
             scan-build --use-analyzer=/usr/bin/clang --status-bugs make
 
       - run:
           name: Run Clang-Tidy
           command: |
-            . ~/venv/bin/activate
             cd build
             run-clang-tidy -p . || exit 1
 
       - run:
           name: Build Project
           command: |
-            . ~/venv/bin/activate
             cd build
             cmake --build .
 
       - run:
           name: Run Tests
-          command: |
-            . ~/venv/bin/activate
-            ./build/MyTests
+          command: ./build/MyTests
 
 workflows:
   version: 2
