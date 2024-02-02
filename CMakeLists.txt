@@ -6,7 +6,10 @@ project(OpenSourceProject VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Find the GTest package (assumes CMakeDeps generator has been used)
+# Specify the location of GTest
+set(GTEST_ROOT "C:/Users/Sky/Documents/GitHub/Open-Source")
+
+# Find the GTest package
 find_package(GTest CONFIG REQUIRED)
 
 # Automatically include all component directories if they exist
