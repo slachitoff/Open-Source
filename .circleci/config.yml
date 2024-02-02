@@ -14,19 +14,19 @@ jobs:
             python3 -m venv ~/venv
             . ~/venv/bin/activate
             pip install conan
-            conan --version  # Verify Conan installation
+            conan --version
 
       - run:
           name: Detect and Update Conan Profile
           command: |
             . ~/venv/bin/activate
-            conan profile detect --force  # Automatically detect and update default profile
+            conan profile detect --force
 
       - run:
           name: Install CMake, Clang, and Clang Tools
           command: |
             apt-get install -y cmake clang clang-tools clang-tidy clang-format
-            clang-format --version  # Verify ClangFormat installation
+            clang-format --version
 
       - run:
           name: Check Code Formatting
@@ -45,11 +45,11 @@ jobs:
             conan install .. --build=missing -s build_type=Release -g CMakeDeps -g CMakeToolchain
 
       - run:
-          name: Configure Project with CMake Using Conan Toolchain
+          name: Configure Project with CMake Using Conan Toolchain and Generate Compilation Database
           command: |
             . ~/venv/bin/activate
             cd build
-            cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
             cmake --build .
 
       - run:
@@ -60,11 +60,11 @@ jobs:
             scan-build --use-analyzer=/usr/bin/clang --status-bugs make
 
       - run:
-          name: Run Clang-Tidy
+          name: Run Clang-Tidy with Compilation Database
           command: |
             . ~/venv/bin/activate
             cd build
-            run-clang-tidy -p . || exit 1
+            run-clang-tidy -p .
 
       - run:
           name: Build Project
