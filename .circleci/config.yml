@@ -48,13 +48,18 @@ jobs:
             source ~/venv/bin/activate
             mkdir -p build && cd build
             conan install .. --build=missing -s build_type=Release
+
+      - run:
+          name: List Build Directory Contents
+          command: |
+            ls -la build/            
+            
       - run:
           name: Configure Project with CMake
           command: |
             . ~/venv/bin/activate
             cd build
             cmake .. -DCMAKE_BUILD_TYPE=Release
-
 
       - run:
           name: Run Clang Static Analyzer
