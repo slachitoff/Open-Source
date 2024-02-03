@@ -6,8 +6,8 @@ project(OpenSourceProject VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Specify the location of GTest
-set(GTEST_ROOT "C:/Users/Sky/Documents/GitHub/Open-Source")
+# Specify the location of GTest relative to your project directory
+set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/external/googletest/googletest")
 
 # Find the GTest package
 find_package(GTest CONFIG REQUIRED)
