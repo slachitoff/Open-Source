@@ -6,10 +6,7 @@ project(OpenSourceProject VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Specify the location of GTest relative to your project directory
-set(GTEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/external/googletest")
-
-# Find the GTest package
+# Find the GTest package. No need to specify GTEST_ROOT with Conan.
 find_package(GTest CONFIG REQUIRED)
 
 # Automatically include all component directories if they exist
@@ -35,7 +32,7 @@ endif()
 
 # Define the test executable
 add_executable(MyTests tests/my_tests.cpp)
-target_link_libraries(MyTests GTest::gtest GTest::gtest_main) # Use targets provided by CMakeDeps generator
+target_link_libraries(MyTests GTest::gtest GTest::gtest_main) # Use targets provided by Conan via CMakeDeps generator
 
 enable_testing()
 include(GoogleTest)
