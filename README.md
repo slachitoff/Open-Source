@@ -15,8 +15,8 @@ This project uses CMake as its build system and Conan for dependency management.
 1. **Configure the Build**:
     ```sh
     mkdir build && cd build
-    conan install .. --build=missing -s build_type=Release
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    conan install .. --build=missing -s build_type=Debug -of .
+    cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
     ```
 
 2. **Compile the Project**:
@@ -26,5 +26,5 @@ This project uses CMake as its build system and Conan for dependency management.
 
 3. **Run Tests**:
     ```sh
-    ctest
+    cd MyTests
     ```

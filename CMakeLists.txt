@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15) # CMakeDeps and CMakeToolchain recommend CMake 3.15 or higher
+cmake_minimum_required(VERSION 3.15) # Ensure compatibility with CMakeDeps and CMakeToolchain
 
 project(OpenSourceProject VERSION 1.0)
 
@@ -6,8 +6,16 @@ project(OpenSourceProject VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Find the GTest package. No need to specify GTEST_ROOT with Conan.
+# Conan setup (if you're using conan_cmake_run or similar)
+# include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+# conan_basic_setup(TARGETS)
+
+# Find the GTest package provided by Conan
 find_package(GTest CONFIG REQUIRED)
+
+# After find_package(GTest CONFIG REQUIRED)
+get_target_property(GTEST_INCLUDE_DIRS GTest::gtest INTERFACE_INCLUDE_DIRECTORIES)
+message(STATUS "GTest include directories: ${GTEST_INCLUDE_DIRS}")
 
 # Automatically include all component directories if they exist
 file(GLOB COMPONENT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/components/*")
@@ -22,17 +30,16 @@ add_executable(OpenSourceExecutable src/main.cpp)
 target_include_directories(OpenSourceExecutable PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Compiler-specific options
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_compile_options(OpenSourceExecutable PRIVATE /Wall /MTd)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_compile_options(OpenSourceExecutable PRIVATE -Wall -Wextra)
+if(MSVC)
+    # Adjust these options as necessary for your project
+    target_compile_options(OpenSourceExecutable PRIVATE /W4 /MT)
 else()
-    message(WARNING "Compiler not officially supported: ${CMAKE_CXX_COMPILER_ID}")
+    target_compile_options(OpenSourceExecutable PRIVATE -Wall -Wextra)
 endif()
 
 # Define the test executable
 add_executable(MyTests tests/my_tests.cpp)
-target_link_libraries(MyTests GTest::gtest GTest::gtest_main) # Use targets provided by Conan via CMakeDeps generator
+target_link_libraries(MyTests GTest::gtest GTest::gtest_main) # Link with Conan-provided targets
 
 enable_testing()
 include(GoogleTest)
