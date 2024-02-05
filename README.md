@@ -26,5 +26,6 @@ This project uses CMake as its build system and Conan for dependency management.
 
 3. **Run Tests**:
     ```sh
-    cd MyTests
+    cd debug
+    MyTests
     ```
