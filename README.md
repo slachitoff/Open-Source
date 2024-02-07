@@ -16,7 +16,7 @@ This project uses CMake as its build system and Conan for dependency management.
     ```sh
     mkdir build && cd build
     conan install .. --build=missing -s build_type=Debug -of .
-    cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON 
     ```
 
 2. **Compile the Project**:
@@ -29,3 +29,9 @@ This project uses CMake as its build system and Conan for dependency management.
     cd debug
     MyTests
     ```
+## Code Formatting
+
+Before submitting your contribution, please ensure your code adheres to our formatting standards. Run the following script to check for formatting issues:
+
+```powershell
+.\scripts\check-formatting.ps1
