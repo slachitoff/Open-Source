@@ -1,13 +1,6 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.15) # Ensure compatibility with CMakeDeps and CMakeToolchain
 
 project(OpenSourceProject VERSION 1.0)
-
-# Include Conan build information
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
-# Set the CMake generator (if necessary, set it in conanfile.txt or via environment variable)
-# set(CONAN_CMAKE_GENERATOR "Ninja" CACHE STRING "" FORCE)
 
 # Enable the generation of the compilation database
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
