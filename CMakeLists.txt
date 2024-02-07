@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.15) # Ensure compatibility with CMakeDeps and C
 
 project(OpenSourceProject VERSION 1.0)
 
+# Set the CMake generator
+set(CONAN_CMAKE_GENERATOR "Ninja" CACHE STRING "" FORCE)
+
+# Include Conan build information
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+# Enable the generation of the compilation database
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Set the C++ standard for the project
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
