@@ -77,7 +77,7 @@ jobs:
           name: Run Tests
           command: |
             . ~/venv/bin/activate
-            ./build/MyTests
+            ./tests/HelloWorldTests/MyTests
 
 workflows:
   version: 2
