@@ -81,7 +81,7 @@ jobs:
           name: Run Tests
           command: |
             . ~/venv/bin/activate
-            ./build/MyTests  # Adjusted path assuming 'build' is the working directory for builds
+            ./build/tests/HelloWorldTests/MyTests
 
 
 workflows:
