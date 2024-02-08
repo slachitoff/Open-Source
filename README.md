@@ -95,4 +95,28 @@ Maintaining code consistency is crucial to our project, and to aid in this, we e
     ```
     For Windows users, incorporating a check functionality into the `format-code.cmd` script requires additional scripting to compare the formatted output to the original files, which can be achieved through custom scripting or third-party tools.
 
+## Static Code Analysis with Clang Static Analyzer
+
+The Clang Static Analyzer is a powerful tool for detecting bugs, memory leaks, and other potential issues in C and C++ code. It analyzes the code at compile time, without needing to execute it.
+
+### Running the Clang Static Analyzer
+
+To run the Clang Static Analyzer on this project, please follow these steps. Note that on Windows, these steps should be performed in Git Bash to ensure compatibility with Unix-like commands and behaviors used by `scan-build`.
+
+#### Open Git Bash
+
+On Windows, start Git Bash. It provides a Unix-like terminal environment that is compatible with many tools developed for Linux or macOS.
+
+#### Prepare Your Build Environment
+
+Navigate to your `build` directory within the Git Bash terminal. Ensure your project is configured with CMake and Conan as detailed in the "Building the Project" section.
+
+#### Run the Analyzer
+
+In your `build` directory, execute the Clang Static Analyzer using `scan-build`:
+
+```sh
+scan-build cmake --build .
+```
+
 Please ensure to format your code using the provided script before submitting a pull request. This helps to maintain a consistent codebase and simplifies the review process.
