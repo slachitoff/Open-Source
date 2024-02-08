@@ -12,17 +12,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Find the GTest package provided by Conan
 find_package(GTest CONFIG REQUIRED)
 
-# Include all component directories if they exist
-file(GLOB COMPONENT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/components/*")
-foreach(COMPONENT_DIR IN LISTS COMPONENT_DIRS)
-    if(IS_DIRECTORY ${COMPONENT_DIR})
-        add_subdirectory(${COMPONENT_DIR})
-    endif()
-endforeach()
+# Include the components directory
+add_subdirectory(components)
 
-# Define the main executable
-add_executable(OpenSourceExecutable src/main.cpp)
-target_include_directories(OpenSourceExecutable PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Include the tests directory
+add_subdirectory(tests)
 
 # Compiler-specific options
 if(MSVC)
@@ -33,16 +27,10 @@ else()
     set(CMAKE_CXX_CLANG_TIDY clang-tidy)
 endif()
 
-# Define the test executable
-add_executable(MyTests tests/my_tests.cpp)
-target_link_libraries(MyTests GTest::gtest GTest::gtest_main)
-
 enable_testing()
-include(GoogleTest)
-gtest_discover_tests(MyTests)
 
 # Add a custom target for applying Clang-Format
-file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.h)
+file(GLOB_RECURSE ALL_SOURCE_FILES components/*.cpp components/*.h tests/*.cpp tests/*.h)
 add_custom_target(
     format
     COMMAND clang-format -i ${ALL_SOURCE_FILES}
