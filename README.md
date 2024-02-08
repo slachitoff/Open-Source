@@ -1,37 +1,48 @@
-# Open-Source Project
+This project uses CMake as its build system and Conan for dependency management, with Ninja as the preferred build system generator for its efficiency and speed. Follow these steps to build the project:
 
-This repository serves as a template for C++ projects using a component-based architecture. It demonstrates best practices in organizing code, managing dependencies, and ensuring code quality and testing.
+1. **Install Dependencies**:
+    Ensure you have CMake, Conan, and Ninja installed on your system. Ninja can be installed from its [GitHub releases page](https://github.com/ninja-build/ninja/releases) and should be added to your system's PATH.
 
-## Component Specification
-
-Our project is structured around components to promote modularity, reusability, and maintainability. Components are logical units of code that provide specific functionality, encapsulated within namespaces and adhering to our project's coding and architectural guidelines.
-
-- **Detailed Component Guidelines**: For comprehensive details on defining and structuring components within this project, refer to our [Component Specification](docs/COMPONENT_SPEC.md).
-
-## Building the Project
-
-This project uses CMake as its build system and Conan for dependency management. To build the project:
-
-1. **Configure the Build**:
+2. **Configure the Build**:
+    Create a build directory, and use Conan to install dependencies. Then configure the project with CMake using Ninja as the generator.
     ```sh
     mkdir build && cd build
-    conan install .. --build=missing -s build_type=Debug -of .
-    cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON 
+    conan install .. --build=missing -s build_type=Debug
+    cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
     ```
 
-2. **Compile the Project**:
+3. **Compile the Project**:
+    Compile the project with Ninja.
     ```sh
-    cmake --build .
+    ninja
     ```
 
-3. **Run Tests**:
+4. **Run Clang-Tidy**:
+    Perform static code analysis with Clang-Tidy to ensure code quality. Make sure `compile_commands.json` is generated in your build directory.
     ```sh
-    cd debug
+    clang-tidy ../src/main.cpp
+    ```
+
+5. **Run Tests**:
+    Execute the test suite to verify the correctness of your code. Assuming tests are compiled into an executable named `MyTests`.
+    ```sh
     MyTests
     ```
+
 ## Code Formatting
 
-Before submitting your contribution, please ensure your code adheres to our formatting standards. Run the following script to check for formatting issues:
+To maintain code consistency, we enforce strict formatting guidelines. Use the following command to check and apply code formatting rules using `clang-format`.
 
-```powershell
-.\scripts\check-formatting.ps1
+- **Check Formatting**:
+    To check for formatting issues, run:
+    ```powershell
+    .\scripts\check-formatting.ps1
+    ```
+
+- **Apply Formatting**:
+    To automatically format your code according to our project's standards, execute:
+    ```sh
+    clang-format -i $(find ./src ./include -name '*.h' -o -name '*.cpp')
+    ```
+
+Please ensure your contributions adhere to the specified guidelines and pass all tests before submitting a pull request.
