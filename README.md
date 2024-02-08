@@ -27,6 +27,14 @@ Ninja is a small build system focused on speed. To install Ninja:
 - **Windows**: Download the latest binary from Ninja's [GitHub releases page](https://github.com/ninja-build/ninja/releases). Extract the executable and add its location to your system's PATH.
 - **macOS and Linux**: Ninja can be installed through Homebrew on macOS (`brew install ninja`) or through the package manager on Linux (for example, `sudo apt-get install ninja-build` on Ubuntu).
 
+### Configuring Conan to Use Ninja
+
+To ensure Conan uses Ninja as the build system generator, add the following configuration to your Conan profile (`~/.conan/profiles/default` or create a new profile):
+
+```plaintext
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+
 ## Building the Project
 
 This project uses CMake as its build system and Conan for dependency management, with Ninja as the preferred build system generator for its efficiency and speed. Follow these steps to build the project:
@@ -62,18 +70,28 @@ This project uses CMake as its build system and Conan for dependency management,
 
 ## Code Formatting
 
-To maintain code consistency, we enforce strict formatting guidelines. Use the following command to check and apply code formatting rules using `clang-format`.
-
-- **Check Formatting**:
-    To check for formatting issues, run:
-    ```powershell
-    .\scripts\check-formatting.ps1
-    ```
+Maintaining code consistency is crucial to our project, and to aid in this, we enforce strict formatting guidelines. We have automated the process of checking and applying code formatting rules using `clang-format` through a script.
 
 - **Apply Formatting**:
-    To automatically format your code according to our project's standards, execute:
-    ```sh
-    clang-format -i $(find ./src ./include -name '*.h' -o -name '*.cpp')
-    ```
+    We provide a script to format your code automatically according to our project's standards. This ensures that your contributions adhere to our formatting guidelines.
 
-Please ensure your contributions adhere to the specified guidelines and pass all tests before submitting a pull request.
+    - For Windows users, run the following command in Command Prompt:
+        ```cmd
+        .\scripts\format-code.cmd
+        ```
+        This script formats all C++ source and header files within the `components` directory according to the project's `clang-format` configuration.
+
+    - For Linux/macOS users, please ensure you have `clang-format` installed and run the following command in the terminal:
+        ```sh
+        find ./components -iname '*.h' -o -iname '*.cpp' -exec clang-format -i {} +
+        ```
+        This command searches for all `.h` and `.cpp` files within the `components` directory and applies `clang-format` to them.
+
+- **Checking Formatting**:
+    Currently, the automated script directly applies formatting. To check formatting without applying changes, Linux/macOS users can use the following command to list files that would be reformatted:
+    ```sh
+    find ./components -iname '*.h' -o -iname '*.cpp' -exec clang-format -n -Werror {} +
+    ```
+    For Windows users, incorporating a check functionality into the `format-code.cmd` script requires additional scripting to compare the formatted output to the original files, which can be achieved through custom scripting or third-party tools.
+
+Please ensure to format your code using the provided script before submitting a pull request. This helps to maintain a consistent codebase and simplifies the review process.
