@@ -74,6 +74,10 @@ jobs:
             cmake --build .
 
       - run:
+          name: List Executable
+          command: find . -name MyTests           
+
+      - run:
           name: Run Tests
           command: |
             . ~/venv/bin/activate
