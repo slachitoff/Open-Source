@@ -34,6 +34,7 @@ To ensure Conan uses Ninja as the build system generator, add the following conf
 ```plaintext
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
+```
 
 ## Building the Project
 
@@ -64,7 +65,7 @@ This project uses CMake as its build system and Conan for dependency management,
 5. **Run Tests**:
     Execute the test suite to verify the correctness of your code. Assuming tests are compiled into an executable named `MyTests`.
     ```sh
-    cd /tests/HelloWorldTests
+    cd tests/HelloWorldTests
     MyTests
     ```
 
