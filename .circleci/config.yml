@@ -57,7 +57,7 @@ jobs:
           command: |
             . ~/venv/bin/activate
             cd build
-            scan-build --use-analyzer=/usr/bin/clang --status-bugs ninja
+            scan-build --use-analyzer=/usr/bin/clang --status-bugs make
 
       - run:
           name: Run Clang-Tidy with Compilation Database
