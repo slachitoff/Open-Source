@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: gcc:latest
+      - image: clang:latest
     steps:
       - checkout
 
